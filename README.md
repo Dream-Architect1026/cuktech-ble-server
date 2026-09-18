@@ -17,6 +17,7 @@
 </div>
 
 <p align="center">English: <a href="README.en.md">README.en.md</a></p>
+
 ## 简介
 
 通过低功耗蓝牙（BLE）本地直连酷态科 10 Ultra 充电器，在电脑上提供实时数据大屏 Web 控制台，
