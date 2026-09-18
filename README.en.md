@@ -115,7 +115,7 @@ Python · aiohttp · bleak · paho-mqtt · PyYAML · SQLite; vanilla ES2020 · C
 
 ## Acknowledgments
 
-- Upstream: [kairui1108/cuktech-ble-server](https://github.com/kairui1108/cuktech-ble-server)
+- Built on [**kairui1108/cuktech-ble-server**](https://github.com/kairui1108/cuktech-ble-server) — special thanks to the original author
 - BLE protocol: [zhyzhaogit/cuktech-ble-controller](https://github.com/zhyzhaogit/cuktech-ble-controller)
 - Protocol detection: [zuyan9/ha-cuk-ble](https://github.com/zuyan9/ha-cuk-ble)
 - Token extraction: [PiotrMachowski/Xiaomi-cloud-tokens-extractor](https://github.com/PiotrMachowski/Xiaomi-cloud-tokens-extractor)
