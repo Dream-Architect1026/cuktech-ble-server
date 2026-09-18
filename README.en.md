@@ -37,7 +37,9 @@ listens on `127.0.0.1` by default.
 BLE pushes about one frame per second and the main chart scrolls live. Five ranges (1m / 5m / 10m / 30m / 1h),
 mouse-centered wheel zoom, drag to review history, and double-click or button to return to live.
 
-![Power chart](docs/chart-5m.png)
+| 1 minute (live) | 5 minute range |
+| :---: | :---: |
+| ![](docs/chart-live.png) | ![](docs/chart-5m.png) |
 
 Hover the chart for a frosted tooltip listing power, voltage and current for every port at that instant; click for an inspector card with the full reading, and on-the-hour current is marked with a pulsing dot.
 
