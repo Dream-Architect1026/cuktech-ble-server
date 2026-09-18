@@ -4,6 +4,8 @@
 
 **蓝牙直连 · 实时数据大屏 · 本地充电记录 · 超级小爱语音控制**
 
+<p align="center"><sub>7B 贾维斯 · 个人能源消费数采组件</sub></p>
+
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-0abf81)](#系统要求)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)

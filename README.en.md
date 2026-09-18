@@ -4,6 +4,8 @@
 
 **Direct BLE link · Real-time dashboard · Local charge history · XiaoAi voice control**
 
+<p align="center"><sub>7B JARVIS · Personal Energy Consumption Data-Acquisition Component</sub></p>
+
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-0abf81)](#requirements)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
