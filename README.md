@@ -2,7 +2,7 @@
 
 # 酷态科 10 Ultra · BLE 本地控制
 
-**蓝牙直连 · 实时数据大屏 · 本地充电记录 · 小爱同学语音控制**
+**蓝牙直连 · 实时数据大屏 · 本地充电记录 · 超级小爱语音控制**
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-0abf81)](#系统要求)
@@ -73,14 +73,6 @@
 配置页可视化管理 BLE / 巴法云 / MQTT 参数、开机自启与每日重启、端口最大充电时长、智能充电保护和数据保留期，保存后自动重启生效。
 
 ![系统配置](docs/settings.png)
-
-### 移动端
-
-界面在手机浏览器自适应，随时查看功率与控制端口。
-
-<p align="center">
-<img src="docs/mobile.png" width="320" alt="移动端">
-</p>
 
 ## 快速开始
 
