@@ -58,7 +58,7 @@ Log in with the Mi account bound to the charger (region `cn`) and note the MAC, 
 **2. Install**
 
 ```bash
-git clone https://github.com/NJ-CODE101/cuktech-ble-server.git
+git clone https://github.com/Dream-Architect1026/cuktech-ble-server.git
 cd cuktech-ble-server
 python -m venv venv
 # Windows

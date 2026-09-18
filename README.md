@@ -55,7 +55,7 @@ python token_extractor.py
 **2. 安装本服务**
 
 ```bash
-git clone https://github.com/NJ-CODE101/cuktech-ble-server.git
+git clone https://github.com/Dream-Architect1026/cuktech-ble-server.git
 cd cuktech-ble-server
 python -m venv venv
 # Windows
