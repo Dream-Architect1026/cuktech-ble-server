@@ -6,6 +6,8 @@
 
 <p align="center">
   <img alt="7B JARVIS · Personal Energy Data Acquisition" src="https://img.shields.io/badge/7B%20JARVIS-Personal%20Energy%20Data%20Acquisition-0abf81?style=for-the-badge">
+  &nbsp;
+  <img alt="Release SC-01" src="https://img.shields.io/badge/Release-SC--01-2d333b?style=for-the-badge">
 </p>
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
