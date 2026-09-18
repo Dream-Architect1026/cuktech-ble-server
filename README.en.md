@@ -28,7 +28,7 @@ listens on `127.0.0.1` by default.
 - **Local charge history**: sessions in SQLite, energy / duration / peak stats, CSV export
 - **Smart management**: max charge duration, hardware countdown, scheduled tasks, trickle protection, power alarms
 - **Voice control**: Bemfa Cloud with XiaoAi via Mi Home; also MQTT / Home Assistant
-- **Themes & languages**: dark glassmorphism UI, Chinese / English, PC & mobile
+- **Themes & languages**: dark glassmorphism UI, Chinese / English, PC
 
 ## Showcase
 
@@ -78,14 +78,6 @@ The custom task bar manages scheduled on/off: each task shows time, port and act
 The config page manages BLE / Bemfa / MQTT settings, auto-start and daily restart, max charge duration, trickle protection and data retention, then restarts automatically on save.
 
 ![Config](docs/settings.png)
-
-### Mobile
-
-The UI is responsive in mobile browsers for checking power and controlling ports.
-
-<p align="center">
-<img src="docs/mobile.png" width="320" alt="mobile">
-</p>
 
 ## Quick start
 
