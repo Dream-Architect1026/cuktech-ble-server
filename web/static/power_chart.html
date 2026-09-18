@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/locales/zh-CN.js?v=8"></script>
+    <script src="/static/locales/en.js?v=8"></script>
+    <script src="/static/i18n.js?v=8"></script>
+    <link rel="preload" href="/static/chart.umd.min.js" as="script">
+    <script src="/static/chart.umd.min.js"></script>
+    <script src="/static/chart-loader.js"></script>
+    <script src="/static/chart-config.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        :root {
+            --bg: #1c1c1c; --card-bg: #252525; --card-border: #3b3b3b;
+            --text: #e1e1e1; --text-dim: #959595;
+            --accent: #03a9f4; --accent-rgb: 3, 169, 244;
+            --border-radius: 8px;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 20px; height: calc(100% - 32px); display: flex; flex-direction: column; }
+        .card-title { font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .card-title::before { content: ''; width: 3px; height: 14px; background: var(--accent); border-radius: 2px; }
+        .time-btn { padding: 4px 8px; border: 1px solid var(--card-border); border-radius: 4px; background: transparent; color: var(--text-dim); font-size: 10px; cursor: pointer; transition: all 0.2s; }
+        .time-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .time-btn.active { background: rgba(var(--accent-rgb), 0.15); border-color: var(--accent); color: var(--accent); }
+        .chart-container { position: relative; flex: 1; min-height: 0; }
+        .chart-container canvas { width: 100% !important; height: 100% !important; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-title">
+            <span data-i18n="index.powerChart">功率曲线</span>
+            <div style="margin-left: auto; display: flex; gap: 4px;">
+                <button class="time-btn" data-minutes="30" onclick="setTimeRange(30)" data-i18n="index.range30">30分</button>
+                <button class="time-btn active" data-minutes="60" onclick="setTimeRange(60)" data-i18n="index.range60">60分</button>
+                <button class="time-btn" data-minutes="90" onclick="setTimeRange(90)" data-i18n="index.range90">90分</button>
+                <button class="time-btn" data-minutes="120" onclick="setTimeRange(120)" data-i18n="index.range120">120分</button>
+                <button class="time-btn" data-minutes="1440" onclick="setTimeRange(1440)" data-i18n="index.range1440">24小时</button>
+            </div>
+        </div>
+        <div class="chart-container"><canvas id="powerChart"></canvas></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let powerChart = null;
+
+        function setTimeRange(minutes) {
+            setCurrentHours(minutes / 60);
+            localStorage.setItem('cuktech-chart-hours', minutes);
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                const btnMinutes = parseInt(btn.dataset.minutes, 10);
+                if (!isNaN(btnMinutes)) btn.classList.toggle('active', btnMinutes === minutes);
+            });
+            fetchChartData();
+        }
+
+        function initChart() {
+            const colors = getChartColors();
+            const ctx = document.getElementById('powerChart').getContext('2d');
+            powerChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'C1', data: [], borderColor: colors.c1, borderWidth: 2, tension: 0.4, pointRadius: 0, fill: false },
+                        { label: 'C2', data: [], borderColor: colors.c2, borderWidth: 2, tension: 0.4, pointRadius: 0, fill: false },
+                        { label: 'C3', data: [], borderColor: colors.c3, borderWidth: 2, tension: 0.4, pointRadius: 0, fill: false },
+                        { label: 'A', data: [], borderColor: colors.a, borderWidth: 2, tension: 0.4, pointRadius: 0, fill: false },
+                        { label: 'Total', data: [], borderColor: colors.text, borderWidth: 2.5, tension: 0.4, pointRadius: 0, fill: false, borderDash: [5, 3] },
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: { duration: 0 },
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: true, position: 'top', labels: { color: colors.textDim, font: { size: 11 }, boxWidth: 12, padding: 12 } } },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', maxTicksLimit: 8, font: { size: 10 } } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#666', font: { size: 10 } }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        async function fetchChartData() {
+            try {
+                const interval = getInterval();
+                const res = await fetch(`${API_BASE}/api/chart?hours=${getCurrentHours()}&interval=${interval}`);
+                if (res.status === 304) return;
+                if (!res.ok) return;
+                const result = await res.json();
+                if (result.ok) {
+                    powerChart.data.labels = result.labels;
+                    const power = result.datasets.power;
+                    for (let i = 0; i < power.length; i++) {
+                        powerChart.data.datasets[i].data = power[i].data;
+                    }
+                    if (power.length >= 5) powerChart.data.datasets[4].data = power[4].data;
+                    powerChart.update('none');
+                }
+            } catch (e) {
+                console.error('Failed to fetch chart data:', e);
+            }
+        }
+
+        // Set initial active button
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            const btnMinutes = parseInt(btn.dataset.minutes, 10);
+            if (!isNaN(btnMinutes)) btn.classList.toggle('active', btnMinutes === parseInt(localStorage.getItem('cuktech-chart-hours') || '60'));
+        });
+
+        async function pollChart() {
+            await fetchChartData();
+            setTimeout(pollChart, 2000);
+        }
+
+        initChart();
+        pollChart();
+    </script>
+</body>
+</html>

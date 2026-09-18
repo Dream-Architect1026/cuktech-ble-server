@@ -1,0 +1,68 @@
+# ============================================================
+# 酷态科 10 号 BLE 本地控制服务 · 配置模板
+# 用法：复制本文件为 config.yaml，再填入你自己的参数
+#   PowerShell: Copy-Item config.yaml.example config.yaml
+# 所有字段缺省时都会由 config.py 自动补默认值，可只保留你需要修改的段。
+# ============================================================
+
+# ---------- 蓝牙 / 设备（必填）----------
+# mac / token / ble_key 三个参数需通过小米云获取：
+#   使用开源工具 Xiaomi-cloud-tokens-extractor 登录你的小米账号即可，详见 README。
+ble:
+  mac: "XX:XX:XX:XX:XX:XX"   # 充电器蓝牙 MAC 地址
+  token: ""                  # 设备认证 Token（32 位十六进制）
+  ble_key: ""                # BLE 加密密钥（32 位十六进制）
+  scan_timeout: 15           # BLE 扫描超时（秒），弱信号环境可调大
+
+# ---------- Web 服务 ----------
+server:
+  host: "127.0.0.1"          # 仅本机访问；需要局域网其它设备访问可改为 "0.0.0.0"
+  port: 8080
+  command_timeout: 10.0      # 单条指令超时（秒）
+  reconnect_base_delay: 1.0  # 断线初始重连延迟（秒）
+  reconnect_max_delay: 300.0 # 断线最大重连延迟（秒）
+  settings_refresh_interval: 10.0  # 端口状态后台刷新间隔（秒）
+  log_level: "info"          # debug / info / warning / error
+  history_retention_days: 365      # 本地历史数据保留天数
+  history_db_path: ""        # SQLite 路径，留空 = 项目根 port_history.db
+  idle_shutdown_seconds: 0   # 所有网页(SSE)关闭后多少秒自动退出；0 = 永久常驻
+
+# ---------- 巴法云（可选，接入小爱同学 / 小度）----------
+# 注册 https://cloud.bemfa.com/ 后，把控制台「用户私钥」填到 uid。
+bemfa:
+  enabled: false
+  uid: ""                    # 巴法云用户私钥（32 位十六进制）
+  name_c1: "酷态科C口1"       # 各端口在巴法云 / 米家的显示名（可自定义）
+  name_c2: "酷态科C口2"
+  name_c3: "酷态科C口3"
+  name_a: "酷态科USB-A"
+  name_ble: "酷态科蓝牙"
+
+# ---------- MQTT（可选，接入 Home Assistant）----------
+mqtt:
+  enabled: false             # true 启用标准 MQTT；也可用环境变量 MQTT_ENABLED=1
+  host: "localhost"
+  port: 1883
+  username: ""
+  password: ""
+  keepalive: 60
+  topic_prefix: "cuktech/charger"
+
+# ---------- 端口最大充电时长（分钟，达到上限自动断电；0 = 不限制）----------
+charge_limit:
+  c1: 120
+  c2: 120
+  c3: 120
+  a: 120
+
+# ---------- 智能充电保护（仅对 C1 / C2 生效，C3 与 USB-A 不受影响）----------
+protection:
+  enabled: true
+  low_power_w: 15.0          # 0 < 功率 < 该阈值视为低功率
+  low_power_minutes: 30      # 低功率持续达到该时长即硬断开
+
+# ---------- 服务管理（Windows）----------
+service:
+  auto_start: false          # 开机自启动（写入当前用户注册表 Run 键，免管理员）
+  daily_restart_enabled: false       # 每日进程级定时重启
+  daily_restart_time: "06:30"        # HH:MM（24 小时制）

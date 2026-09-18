@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle.index">CUKTECH 10 GaN Charger Ultra</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="preload" href="/static/chart.umd.min.js" as="script">
+    <link rel="preload" href="/static/charger.png" as="image">
+    <script src="/static/locales/zh-CN.js?v=27"></script>
+    <script src="/static/locales/en.js?v=27"></script>
+    <script src="/static/i18n.js?v=27"></script>
+    <script defer src="/static/chart.umd.min.js"></script>
+    <script defer src="/static/charge_history.js?v=27"></script>
+    <script src="/static/chart-loader.js"></script>
+    <script src="/static/chart-config.js?v=27"></script>
+    <link rel="stylesheet" href="static/index.css?v=27">
+</head>
+<body>
+    <div class="bg-scene" aria-hidden="true">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="bg-orb orb-3"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-scanline"></div>
+    </div>
+    <div class="container">
+
+        <!-- ═══ 顶栏：品牌 + 链路状态 + 设备控制（一条横排） ═══ -->
+        <header class="topbar">
+            <div class="brand">
+                <img src="/static/logo_footer.png" alt="CUKTECH" class="brand-logo">
+                <span id="firmwareVersion" class="firmware-tag"></span>
+            </div>
+            <div class="topbar-right">
+                <div class="badge-cluster">
+                    <div class="badge-wrap">
+                        <div id="statusBadge" class="status-badge disconnected"><span class="status-dot"></span><span>BLE</span></div>
+                        <div id="qualityTooltip" class="quality-tooltip" style="display:none;"></div>
+                    </div>
+                    <div class="badge-wrap">
+                        <div id="mqttBadge" class="status-badge disconnected"><span class="status-dot"></span><span>MQTT</span></div>
+                        <div id="mqttTooltip" class="quality-tooltip" style="display:none;"></div>
+                    </div>
+                    <div class="badge-wrap">
+                        <div id="bemfaBadge" class="status-badge disconnected"><span class="status-dot"></span><span>Bemfa</span></div>
+                        <div id="bemfaTooltip" class="quality-tooltip" style="display:none;"></div>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" id="bleToggle" onclick="bleToggle()" data-i18n="common.connect">连接设备</button>
+                    <button class="btn btn-secondary" onclick="bleRestart()" data-i18n="common.restart">重启</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ═══ 核心仪表带：设备 + 大数字功率 + KPI ═══ -->
+        <section class="card hero-card">
+            <div class="hero-grid">
+                <div class="hero-device">
+                    <div class="device-wrap" id="deviceWrap">
+                        <img class="unconnected-img" id="unconnectedImg"
+                             src="/static/plugin_imgs/main_card_ad1204u_unconnected.png" alt="CUKTECH Charger">
+                        <div class="device-wrap-inner">
+                            <div class="device-charger" id="deviceChargerAnim">
+                                <div class="dark-glow-ani" id="darkGlowAni"></div>
+                                <div class="scene-badge-ani" id="sceneBadgeAni">
+                                    <img id="sceneBadgeIconAni" src="" alt="">
+                                    <span id="sceneBadgeTextAni"></span>
+                                </div>
+                                <img class="device-img" id="deviceImgAni" src="/static/plugin_imgs/main_charger_dark_ad1204_all.png" alt="">
+                                <div class="usb-overlay-ani" id="usbOverlayAni">
+                                    <div class="usb-mod-ani" id="usbModC1" style="top:25%"><div class="usb-picon" style="top:1px"><img id="usbPiconC1" src="/static/plugin_imgs/main_charger_dark_power_on.png" alt=""></div><div class="usb-pbg" style="top:0;width:57%;height:24px"><img src="/static/plugin_imgs/main_card_usb_c_rectangle.png" alt="" style="width:100%;height:100%"></div><div class="usb-pval" id="usbPvalC1" style="top:7px">0W</div></div>
+                                    <div class="usb-mod-ani" id="usbModC2" style="top:35%"><div class="usb-picon" style="top:1px"><img id="usbPiconC2" src="/static/plugin_imgs/main_charger_dark_power_on.png" alt=""></div><div class="usb-pbg" style="top:0;width:57%;height:24px"><img src="/static/plugin_imgs/main_card_usb_c_rectangle.png" alt="" style="width:100%;height:100%"></div><div class="usb-pval" id="usbPvalC2" style="top:7px">0W</div></div>
+                                    <div class="usb-mod-ani" id="usbModC3" style="top:45%"><div class="usb-picon" style="top:1px"><img id="usbPiconC3" src="/static/plugin_imgs/main_charger_dark_power_on.png" alt=""></div><div class="usb-pbg" style="top:0;width:57%;height:24px"><img src="/static/plugin_imgs/main_card_usb_c_rectangle.png" alt="" style="width:100%;height:100%"></div><div class="usb-pval" id="usbPvalC3" style="top:7px">0W</div></div>
+                                    <div class="usb-mod-ani" id="usbModA" style="top:55%"><div class="usb-picon" style="top:1px"><img id="usbPiconA" src="/static/plugin_imgs/main_charger_dark_power_on.png" alt=""></div><div class="usb-pbg" style="top:0;left:42%;width:57%;height:24px"><img src="/static/plugin_imgs/main_card_usb_a_rectangle.png" alt="" style="width:100%;height:100%"></div><div class="usb-pval" id="usbPvalA" style="top:7px;">0W</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-gauge">
+                    <div class="hero-value-row">
+                        <span class="hero-value" id="totalPower">0.0</span><span class="hero-unit">W</span>
+                        <span class="hero-live-tag"><span class="live-dot"></span>LIVE</span>
+                    </div>
+                    <div class="hero-label" data-i18n="power.total">总功率 (W)</div>
+                    <div class="power-bar-track"><div class="power-bar-fill" id="powerBarFill"></div></div>
+                    <div class="power-bar-scale"><span>0</span><span>30</span><span>60</span><span>90</span><span>120W</span></div>
+                </div>
+                <div class="hero-kpis">
+                    <div class="hero-metric"><span class="hero-metric-value" id="maxVoltage">0.0</span><span class="hero-metric-label" data-i18n="power.maxVoltage">最高电压 (V)</span></div>
+                    <div class="hero-metric"><span class="hero-metric-value" id="heroCurrent">0.0</span><span class="hero-metric-label" data-i18n="power.realtimeCurrent">实时电流 (A)</span></div>
+                    <div class="hero-metric"><span class="hero-metric-value" id="activePorts">0</span><span class="hero-metric-label" data-i18n="power.activePorts">活跃端口 (路)</span></div>
+                    <div class="hero-metric"><span class="hero-metric-value" id="powerLoad">0</span><span class="hero-metric-label" data-i18n="power.loadRate">负载率 (%)</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功率曲线 -->
+        <section class="card chart-card">
+            <div class="card-title">
+                <span data-i18n="index.powerChart">功率曲线</span>
+                <div class="range-tabs" id="rangeTabs">
+                    <button class="time-btn active" data-minutes="1" onclick="setTimeRange(1)" data-i18n="index.range1m">1分</button>
+                    <button class="time-btn" data-minutes="5" onclick="setTimeRange(5)" data-i18n="index.range5m">5分</button>
+                    <button class="time-btn" data-minutes="10" onclick="setTimeRange(10)" data-i18n="index.range10m">10分</button>
+                    <button class="time-btn" data-minutes="30" onclick="setTimeRange(30)" data-i18n="index.range30m">30分</button>
+                    <button class="time-btn" data-minutes="60" onclick="setTimeRange(60)" data-i18n="index.range1h">1小时</button>
+                </div>
+                <div class="chart-tools">
+                    <button class="chart-tool" id="zoomInBtn" type="button" title="放大">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="chart-tool" id="zoomOutBtn" type="button" title="缩小">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="chart-tool chart-tool-reset" id="zoomResetBtn" type="button" data-i18n="chart.backLive">回到实时</button>
+                </div>
+            </div>
+            <div class="chart-stage">
+                <div class="chart-container"><canvas id="powerChart"></canvas></div>
+                <div class="chart-inspector" id="chartInspector" hidden></div>
+            </div>
+            <div class="chart-hint" data-i18n="chart.hint">滚轮缩放 · 拖拽平移 · 双击回到实时 · 单击查看该时刻详情</div>
+        </section>
+
+        <!-- 充电记录（本地存储） -->
+        <section class="card history-card">
+            <div class="card-title"><span data-i18n="index.chargeHistory">充电记录</span>
+                <span class="title-sub local-badge" data-i18n="charge.localStored">本地存储</span>
+                <select id="chargePeriod" class="cuk-select" onchange="startChargeHistoryAutoRefresh('chargeSessionList','chargeStats',this.value,30000)">
+                    <option value="today" data-i18n="charge.today">今日</option>
+                    <option value="yesterday" data-i18n="charge.yesterday">昨日</option>
+                    <option value="week" data-i18n="charge.week">本周</option>
+                    <option value="month" data-i18n="charge.month">本月</option>
+                    <option value="all" data-i18n="charge.all">全部</option>
+                </select>
+                <div class="export-group">
+                    <button class="time-btn" onclick="exportCSV('sessions')" data-i18n="auto.exportSessions">会话CSV</button>
+                    <button class="time-btn" onclick="exportCSV('energy')" data-i18n="auto.exportDaily">日报CSV</button>
+                </div>
+            </div>
+            <div id="chargeStats" class="charge-stats"></div>
+            <div id="chargeSessionList"></div>
+            <div id="sessionDetail" class="session-detail" hidden>
+                <div class="session-detail-head">
+                    <span id="sdTitle" class="session-detail-title"></span>
+                    <span id="sdDuration" class="session-detail-dur"></span>
+                </div>
+                <div class="session-detail-acc">
+                    <span class="title-sub" data-i18n="charge.accuracy">精度</span>
+                    <select class="cuk-select" onchange="setDownsample(this.value)">
+                        <option value="0" data-i18n="charge.allPoints">全部</option>
+                        <option value="100" data-i18n="charge.points100">100点</option>
+                        <option value="200" data-i18n="charge.points200">200点</option>
+                        <option value="300" selected data-i18n="charge.points300">300点</option>
+                        <option value="600" data-i18n="charge.points600">600点</option>
+                    </select>
+                </div>
+                <div class="session-chart"><canvas id="sessionChart"></canvas></div>
+                <div class="session-kpis">
+                    <div class="session-kpi"><div class="session-kpi-val" id="sdEnergy">0</div><div class="session-kpi-label" data-i18n="charge.energyUnit">电量 Wh</div></div>
+                    <div class="session-kpi"><div class="session-kpi-val" id="sdAvgP">0</div><div class="session-kpi-label" data-i18n="charge.avgPowerUnit">均功率 W</div></div>
+                    <div class="session-kpi"><div class="session-kpi-val" id="sdPeakP">0</div><div class="session-kpi-label" data-i18n="charge.peakPowerUnit">峰功率 W</div></div>
+                    <div class="session-kpi"><div class="session-kpi-val" id="sdAvgV">0</div><div class="session-kpi-label" data-i18n="charge.avgVoltageUnit">均电压 V</div></div>
+                    <div class="session-kpi"><div class="session-kpi-val" id="sdAvgI">0</div><div class="session-kpi-label" data-i18n="charge.avgCurrentUnit">均电流 A</div></div>
+                    <div class="session-kpi session-kpi-close"><button class="btn btn-danger btn-sm" onclick="closeSessionDetail()" data-i18n="common.close">关闭</button></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 倒计时设置 -->
+        <aside class="card countdown-card">
+            <div class="card-title" data-i18n="countdown.title">倒计时设置</div>
+            <div class="countdown-grid" id="countdownGrid"></div>
+        </aside>
+
+        <!-- 端口监控 -->
+        <aside class="card port-col">
+            <div class="card-title"><span data-i18n="index.portMonitor">端口监控</span>
+                <span class="title-sub" data-i18n="index.clickForDetail">(点击查看详情)</span></div>
+            <div class="port-grid" id="portGrid"></div>
+        </aside>
+
+        <!-- 设备设置 -->
+        <section class="card settings-card">
+            <div class="card-title" data-i18n="index.deviceSettings">设备设置</div>
+            <div class="settings-grid" id="settingsGrid"></div>
+        </section>
+
+        <!-- 定时控制（原自动化与通知：通知开关迁至配置页，功率阈值已移除） -->
+        <aside class="card automation-card">
+            <div class="card-title" data-i18n="auto.scheduleTitle">定时控制</div>
+            <div id="automationPanel"></div>
+        </aside>
+
+        <footer class="footer">
+            <a href="https://github.com/kairui1108/cuktech-ble-server" target="_blank" class="footer-link">CUKTECH-BLE-HA Web</a>
+            <span class="footer-sep">|</span>
+            <a href="config.html" class="footer-link footer-link-dim"><span aria-hidden="true">&#9881;</span> <span data-i18n="index.config">配置</span></a>
+            <span class="footer-sep">|</span>
+            <div class="theme-switcher">
+                <button class="theme-btn" onclick="openQrModal()"><svg class="tb-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg> <span data-i18n="index.qrAccess">手机访问</span></button>
+            </div>
+            <span class="footer-sep">|</span>
+            <div class="theme-switcher" id="themeSwitcher">
+                <button class="theme-btn" onclick="toggleThemeMenu()" id="themeBtn"><svg class="tb-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3-3 3h-2.2a2.3 2.3 0 0 0-1.8 3.7c.6.8 0 1.8-1 1.8H12z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10.5" r="1"/></svg> <span data-i18n="common.theme">主题</span></button>
+                <div class="theme-menu" id="themeMenu">
+                    <div class="theme-option" onclick="setTheme('ha-dark')" data-theme="ha-dark"><span class="theme-dot" style="background: #1c1c1c;"></span> <span data-i18n="index.themeDark">暗色</span></div>
+                    <div class="theme-option" onclick="setTheme('deep-blue')" data-theme="deep-blue"><span class="theme-dot" style="background: #0f0f1a;"></span> <span data-i18n="index.themeDeepBlue">深蓝</span></div>
+                    <div class="theme-option" onclick="setTheme('ocean')" data-theme="ocean"><span class="theme-dot" style="background: #0a1628;"></span> <span data-i18n="index.themeOcean">海洋</span></div>
+                    <div class="theme-option" onclick="setTheme('gray')" data-theme="gray"><span class="theme-dot" style="background: #2d2d2d;"></span> <span data-i18n="index.themeGray">灰色</span></div>
+                    <div class="theme-option" onclick="setTheme('light')" data-theme="light"><span class="theme-dot" style="background: #f5f5f5;"></span> <span data-i18n="index.themeLight">浅色</span></div>
+                    <div class="theme-option" onclick="setTheme('system')" data-theme="system"><span class="theme-dot" style="background: linear-gradient(135deg, #1c1c1c 50%, #f5f5f5 50%);"></span> <span data-i18n="index.themeSystem">跟随系统</span></div>
+                    <div class="theme-option theme-custom"><span class="theme-dot" style="background: conic-gradient(red, orange, yellow, green, cyan, blue, magenta, red);"></span> <span data-i18n="index.themeCustom">自定义</span> <input type="color" id="accentPicker" value="#10b981" title="自定义强调色" onchange="setAccent(this.value)" onclick="event.stopPropagation()"></div>
+                </div>
+            </div>
+            <span class="footer-sep">|</span>
+            <div class="theme-switcher" id="logLevelSwitcher">
+                <button class="theme-btn" onclick="toggleLogLevelMenu()" id="logLevelBtn"><svg class="tb-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg> <span data-i18n="common.logs">日志</span></button>
+                <div class="theme-menu" id="logLevelMenu">
+                    <div class="theme-option" onclick="setLogLevel('debug')" data-level="debug">Debug</div>
+                    <div class="theme-option" onclick="setLogLevel('info')" data-level="info">Info</div>
+                    <div class="theme-option" onclick="setLogLevel('warning')" data-level="warning">Warning</div>
+                    <div class="theme-option" onclick="setLogLevel('error')" data-level="error">Error</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="portModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <span class="modal-title" id="modalTitle" data-i18n="modal.portDetail" data-i18n-params='{"port":"C1"}'>C1 端口详情</span>
+                    <span class="modal-state idle" id="modalState"><span class="dot"></span><span id="modalStateText">空闲</span></span>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-stats">
+                <div class="power-item"><div class="power-value" id="modalVoltage">0.0</div><div class="power-label" data-i18n="modal.voltage">电压 (V)</div></div>
+                <div class="power-item"><div class="power-value success" id="modalCurrent">0.0</div><div class="power-label" data-i18n="modal.current">电流 (A)</div></div>
+                <div class="power-item"><div class="power-value warning" id="modalPower">0.0</div><div class="power-label" data-i18n="modal.power">功率 (W)</div></div>
+                <div class="power-item"><div class="power-value" id="modalProtocol">idle</div><div class="power-label" data-i18n="modal.protocol">实时充电协议</div></div>
+            </div>
+            <div class="modal-realtime-row">
+                <button class="time-btn modal-realtime-btn" id="modalRealTimeBtn" onclick="toggleModalRealTime()" data-i18n="modal.realtime">实时</button>
+            </div>
+            <div class="modal-chart-container"><canvas id="modalChart"></canvas></div>
+            <div class="modal-protocols" id="modalProtocols"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal" style="max-width: 360px;">
+            <div class="modal-header">
+                <span class="modal-title" data-i18n="index.qrAccess">手机访问</span>
+                <button class="modal-close" onclick="closeQrModal()">&times;</button>
+            </div>
+            <div class="qr-modal-body">
+                <img class="qr-img" id="qrImg" src="" alt="QR">
+                <div class="qr-url" id="qrUrl"></div>
+                <div class="qr-tip" data-i18n="index.qrTip">使用手机相机扫码，打开手机版控制页</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script defer src="/static/app.js?v=27"></script>
+</body>
+</html>
