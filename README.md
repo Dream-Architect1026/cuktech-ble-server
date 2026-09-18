@@ -5,7 +5,7 @@
 **蓝牙直连 · 实时数据大屏 · 本地充电记录 · 超级小爱语音控制**
 
 <p align="center">
-  <img alt="7B 贾维斯 · 个人能源消费数采组件" src="https://img.shields.io/badge/7B%20%E8%B4%BE%E7%BB%B4%E6%96%AF-%E4%B8%AA%E4%BA%BA%E8%83%BD%E6%BA%90%E6%B6%88%E8%B4%B9%E6%95%B0%E9%87%87%E7%BB%84%E4%BB%B6-0abf81?style=for-the-badge">
+  <img alt="9B 贾维斯 · 个人能源消费数采组件" src="https://img.shields.io/badge/7B%20%E8%B4%BE%E7%BB%B4%E6%96%AF-%E4%B8%AA%E4%BA%BA%E8%83%BD%E6%BA%90%E6%B6%88%E8%B4%B9%E6%95%B0%E9%87%87%E7%BB%84%E4%BB%B6-0abf81?style=for-the-badge">
   &nbsp;
   <img alt="发布编号 SC-01" src="https://img.shields.io/badge/%E5%8F%91%E5%B8%83%E7%BC%96%E5%8F%B7-SC--01-2d333b?style=for-the-badge">
 </p>
@@ -17,6 +17,7 @@
 </div>
 
 <p align="center">English: <a href="README.en.md">README.en.md</a></p>
+## 简介
 
 通过低功耗蓝牙（BLE）本地直连酷态科 10 Ultra 充电器，在电脑上提供实时数据大屏 Web 控制台，
 并可接入巴法云，用小爱同学语音控制各端口开关。数据仅在本地流转，默认只监听 `127.0.0.1`。
