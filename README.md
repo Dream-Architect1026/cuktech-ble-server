@@ -15,6 +15,8 @@
 
 ![实时数据大屏](docs/dashboard.png)
 
+<p align="center"><em>首页数据大屏：大数字总功率仪表、流动功率条与四项 KPI，数值平滑刷新</em></p>
+
 ## 功能
 
 - **实时数据大屏**：大数字总功率仪表、流动功率条、KPI 卡片，数值平滑刷新
@@ -25,19 +27,60 @@
 - **语音控制**：接入巴法云，经米家绑定后用小爱同学控制；同时支持 MQTT / Home Assistant
 - **主题与多语言**：深色科技风磨砂玻璃，中英文，PC / 移动端适配
 
-## 界面预览
+## 界面展示
 
-| 实时功率曲线 | 单端口详情 |
+### 实时功率曲线
+
+蓝牙硬件约 1 秒推送 1 帧，主曲线随数据实时滚动；提供 1 分 / 5 分 / 10 分 / 30 分 / 1 小时五档区间，
+滚轮以鼠标为中心缩放，按住拖拽回看历史，双击或按钮回到实时。
+
+![实时功率曲线](docs/chart-5m.png)
+
+将鼠标移到曲线上，磨砂玻璃提示框同时列出该时刻各端口的功率、电压与电流；单击则弹出详情卡给出该点完整读数，整点电流以呼吸点标记。
+
+| 悬停查看 W·V·A | 单击查看详情卡 |
 | :---: | :---: |
-| ![](docs/chart-5m.png) | ![](docs/port-detail.png) |
-| 悬停 W·V·A | 点击详情卡 |
 | ![](docs/chart-tooltip.png) | ![](docs/chart-inspector.png) |
-| 端口监控 | 定时控制 |
-| ![](docs/ports.png) | ![](docs/schedule.png) |
-| 充电记录 | 会话详情 |
-| ![](docs/sessions.png) | ![](docs/session-detail.png) |
-| 系统配置 | 移动端 |
-| ![](docs/settings.png) | ![](docs/mobile.png) |
+
+### 端口监控与单端口详情
+
+端口卡实时显示四路 C1 / C2 / C3 / USB-A 的开关、电压 / 电流 / 功率、本次充电时长与充电协议。
+
+![端口监控](docs/ports.png)
+
+点击任意端口打开详情：顶部四个大数字仪表（电压 / 电流 / 功率 / 协议），下方是该端口独立的 V·A·W 实时曲线，并可直接切换 PD / PPS / UFCS 协议。
+
+![单端口详情](docs/port-detail.png)
+
+### 充电记录
+
+每次充电自动生成会话并写入本地 SQLite，记录电量、时长、平均与峰值功率，支持按日查询、分页与 CSV 导出。
+
+![充电记录](docs/sessions.png)
+
+点开单次会话可回看整段充电的功率曲线与完整 KPI，包括中途的协议切换。
+
+![会话详情](docs/session-detail.png)
+
+### 定时控制
+
+自定义任务栏集中管理定时开 / 关：每条任务显示时间、端口与动作，可随时暂停、启用或删除，底部表单快速添加，最多 50 条。
+
+![定时控制](docs/schedule.png)
+
+### 系统配置
+
+配置页可视化管理 BLE / 巴法云 / MQTT 参数、开机自启与每日重启、端口最大充电时长、智能充电保护和数据保留期，保存后自动重启生效。
+
+![系统配置](docs/settings.png)
+
+### 移动端
+
+界面在手机浏览器自适应，随时查看功率与控制端口。
+
+<p align="center">
+<img src="docs/mobile.png" width="320" alt="移动端">
+</p>
 
 ## 快速开始
 
@@ -113,11 +156,11 @@ Python · aiohttp · bleak · paho-mqtt · PyYAML · SQLite；原生 ES2020 · C
 ## 致谢
 
 - 本项目基于 [**kairui1108/cuktech-ble-server**](https://github.com/kairui1108/cuktech-ble-server) 二次开发，特别感谢原作者
-- BLE 协议：[zhyzhaogit/cuktech-ble-controller](https://github.com/zhyzhaogit/cuktech-ble-controller)
-- 协议检测：[zuyan9/ha-cuk-ble](https://github.com/zuyan9/ha-cuk-ble)
-- Token 提取：[PiotrMachowski/Xiaomi-cloud-tokens-extractor](https://github.com/PiotrMachowski/Xiaomi-cloud-tokens-extractor)
-- BLE 通信：[hbldh/bleak](https://github.com/hbldh/bleak)
-- MQTT 客户端：[Eclipse Paho](https://eclipse.dev/paho/)
+- BLE 协议参考：[**zhyzhaogit/cuktech-ble-controller**](https://github.com/zhyzhaogit/cuktech-ble-controller)
+- 协议检测参考：[**zuyan9/ha-cuk-ble**](https://github.com/zuyan9/ha-cuk-ble)
+- 小米设备 Token 提取：[**PiotrMachowski/Xiaomi-cloud-tokens-extractor**](https://github.com/PiotrMachowski/Xiaomi-cloud-tokens-extractor)
+- BLE 通信库：[**hbldh/bleak**](https://github.com/hbldh/bleak)
+- MQTT 客户端：[**Eclipse Paho**](https://eclipse.dev/paho/)
 
 ## 免责声明
 
